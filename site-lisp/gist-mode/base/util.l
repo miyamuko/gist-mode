@@ -1,6 +1,6 @@
-; -*- mode: lisp; package: user -*-
+﻿; -*- mode: lisp; package: gist-mode; encoding: utf-8 -*-
 
-;;; gist-mode.l
+;;; gist-mode/base/util.l
 ;;
 ;; Copyright (c) 2010 MIYAMUKO Katsuyuki.
 ;;
@@ -25,13 +25,28 @@
 
 ;;; Code:
 
-(in-package :user)
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (mc-require "gist-mode/package")
+  )
 
-(mc-require "gist-mode/version")
-(mc-require "gist-mode/list")
-(mc-require "gist-mode/post")
+(in-package :gist-mode)
+
+(defmacro with-gensyms (syms &body body)
+  `(let ,(mapcar #'(lambda (sym)
+                     `(,sym (gensym)))
+                 syms)
+     ,@body))
+(setf (get 'with-gensyms 'ed:lisp-indent-hook) 'let)
+
+(defmacro invoke-later (dt &body body)
+  `(start-timer ,dt #'(lambda () ,@body) t))
+(setf (get 'invoke-later 'ed::lisp-indent-hook) '1)
+
+(defun set-local-window-flag-alist (flags-alist &optional (window-or-buffer (selected-buffer)))
+  (dolist (kv flags-alist)
+    (set-local-window-flags window-or-buffer (car kv) (cdr kv))))
 
 
-(provide "gist-mode")
+(provide "gist-mode/base/util")
 
 ;;; End

@@ -1,4 +1,4 @@
-; -*- mode: lisp; package: gist-mode -*-
+; -*- mode: lisp; package: gist-mode; encoding: utf-8 -*-
 
 ;;; gist-mode/version.l
 ;;

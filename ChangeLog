@@ -1,3 +1,33 @@
+2010-10-06  MIYAMUKO Katsuyuki
+
+	* list 周りの自動ロードを実装
+	- 非同期に複数のリクエストを投げて描画は順番に行う
+	  - リクエストが帰ってきたらページをキーにして hash に入れる
+	  - ページ順に hash から取り出して描画
+	- カーソル移動時に自動的にリクエストを投げるため timer を利用
+	  - 最初は C-n とかを全部独自のコマンドに置き換えようと思ったが
+	    きりがないので timer にした
+
+2010-09-29  MIYAMUKO Katsuyuki
+
+	* view 構造体を導入して大幅にリファクタリング
+
+	* point をいじりつつ insert vs buffer-stream-point をいじりつつ format t
+	- point だとユーザがカーソルをぐりぐり動かしている間に描画しようとすると変なことになりやすい
+	- buffer-stream-point をメインで使っていく
+
+2010-09-24  MIYAMUKO Katsuyuki
+
+	* list 関連をとりあえず一覧を適当に出すまで実装
+
+2010-09-22  MIYAMUKO Katsuyuki
+
+	* post を少しだけ実装
+
+2010-09-21  MIYAMUKO Katsuyuki
+
+	* 少しだけ
+
 2010-09-07  MIYAMUKO Katsuyuki
 
 	* gist-mode 作成開始

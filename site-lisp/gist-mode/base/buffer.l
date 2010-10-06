@@ -1,6 +1,6 @@
-; -*- mode: lisp; package: user -*-
+﻿; -*- mode: lisp; package: gist-mode; encoding: utf-8 -*-
 
-;;; gist-mode.l
+;;; gist-mode/base/buffer.l
 ;;
 ;; Copyright (c) 2010 MIYAMUKO Katsuyuki.
 ;;
@@ -25,13 +25,37 @@
 
 ;;; Code:
 
-(in-package :user)
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (mc-require "gist-mode/package")
+  (mc-require "gist-mode/base/util")
+  )
 
-(mc-require "gist-mode/version")
-(mc-require "gist-mode/list")
-(mc-require "gist-mode/post")
+(in-package :gist-mode)
+
+(defmacro with-selected-buffer ((buffer) &body body)
+  (with-gensyms ($original $buffer)
+    `(let ((,$original (selected-buffer))
+           (,$buffer ,buffer))
+       (with-set-buffer
+         (if (eq ,$original ,$buffer)
+             (progn ,@body)
+           (unwind-protect
+               (progn
+                 (set-buffer ,$buffer)
+                 ,@body)
+             (set-buffer ,$original)))))))
+(setf (get 'with-selected-buffer 'ed:lisp-indent-hook) 'with-selected-window)
+
+(defmacro with-temporary-writable ((buffer) &body body)
+  `(with-selected-buffer (,buffer)
+     (let ((read-only buffer-read-only))
+       (setf buffer-read-only nil)
+       (unwind-protect
+           (progn ,@body)
+         (setf buffer-read-only read-only)))))
+(setf (get 'with-temporary-writable 'lisp-indent-hook) 'with-selected-window)
 
 
-(provide "gist-mode")
+(provide "gist-mode/base/buffer")
 
 ;;; End

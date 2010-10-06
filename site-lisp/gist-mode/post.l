@@ -1,6 +1,6 @@
-; -*- mode: lisp; package: gist-mode -*-
+﻿; -*- mode: lisp; package: gist-mode; encoding: utf-8 -*-
 
-;;; gist-mode/gist-mode.l
+;;; gist-mode/post.l
 ;;
 ;; Copyright (c) 2010 MIYAMUKO Katsuyuki.
 ;;
@@ -31,11 +31,45 @@
 
 (in-package :gist-mode)
 
-(export '(gist-mode
+(export '(gist-region
+          gist-region-private
+          gist-buffer
+          gist-buffer-private
           ))
 
+(defun gist-region (s e)
+  (interactive "r")
+  (gist-post s e :private nil))
 
-(provide "gist-mode/gist-mode")
+(defun gist-region-private (s e)
+  (interactive "r")
+  (gist-post s e :private t))
 
+(defun gist-buffer ()
+  (interactive "r")
+  (gist-post (point-min) (point-max) :private nil))
+
+(defun gist-buffer-private ()
+  (interactive "r")
+  (gist-post (point-min) (point-max) :private t))
+
+
+(defun gist-post (s e &key private)
+  (if (< e s) (rotatef s e))
+  (let ((contents (buffer-substring s e))
+        (filetype (gh:guess-gist-filetype (selected-buffer))))
+    (message "e...")
+    (gh:create-gist contents :lang (car filetype) :private private
+                    :callback #'gist-post-callback)))
+
+(defun gist-post-callback (id)
+  (if id
+      (let ((url (gh:gist-home-url id)))
+        (copy-to-clipboard url)
+        (message "投稿しました: ~A" url))
+    (message "投稿失敗")))
+
+
+(provide "gist-mode/post")
 
 ;;; End

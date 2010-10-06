@@ -26,6 +26,8 @@
 ;;; Code:
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
+  (require "github")
+
   (unless (find-package :gist-mode)
     (defpackage :gist-mode
       (:use
@@ -33,6 +35,7 @@
        :editor
        ))))
 
+(use-package :gist-mode :user)
 
 (provide "gist-mode/package")
 

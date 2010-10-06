@@ -1,6 +1,6 @@
-; -*- mode: lisp; package: user -*-
+﻿; -*- mode: lisp; package: gist-mode; encoding: utf-8 -*-
 
-;;; gist-mode.l
+;;; gist-mode/base/keymap.l
 ;;
 ;; Copyright (c) 2010 MIYAMUKO Katsuyuki.
 ;;
@@ -25,13 +25,33 @@
 
 ;;; Code:
 
-(in-package :user)
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (mc-require "gist-mode/package")
+  (mc-require "gist-mode/base/util")
+  )
 
-(mc-require "gist-mode/version")
-(mc-require "gist-mode/list")
-(mc-require "gist-mode/post")
+(in-package :gist-mode)
+
+(defmacro with-keymap (keymap &body body)
+  (with-gensyms ($keymap)
+    `(let ((,$keymap ,keymap))
+       ,@(mapcar #'(lambda (form)
+                     (if (cadr form)
+                         `(define-key ,$keymap ,@form)
+                       `(undefine-key ,$keymap ,(car form))))
+                 body)
+       ,$keymap)))
+(setf (get 'with-keymap 'ed:lisp-indent-hook) 'let)
+
+(defmacro define-keymap (name base &body body)
+  `(progn
+     (defvar ,name nil)
+     (setf ,name
+           (with-keymap ,base
+             ,@body))))
+(setf (get 'define-keymap 'ed::lisp-indent-hook) 'defun)
 
 
-(provide "gist-mode")
+(provide "gist-mode/base/keymap")
 
 ;;; End
