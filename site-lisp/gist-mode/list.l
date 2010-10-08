@@ -47,8 +47,8 @@
 
 (defvar *gist-list-mode-hook* nil)
 
-(defvar *gist-list-header-foreground-color* 8)
-(defvar *gist-list-header-background-color* 15)
+(defvar *gist-list-header-color* '(:foreground 8 :background 15))
+
 (defvar *gist-list-refresh-per-render* 3)
 
 (defconstant +gist-max-parallel-requests+ 6)
@@ -143,8 +143,7 @@
 
 (defun list-header-face ()
   (make-face :id 'gist-list-header
-             :text-attr `(:foreground ,*gist-list-header-foreground-color*
-                          :background ,*gist-list-header-background-color*
+             :text-attr `(,@*gist-list-header-color*
                           :extend t)))
 
 (defun list-item-face (gist)
