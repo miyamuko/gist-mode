@@ -34,10 +34,10 @@
 
 (defmacro with-selected-buffer ((buffer) &body body)
   (with-gensyms ($original $buffer)
-    `(let ((,$original (selected-buffer))
-           (,$buffer ,buffer))
-       (with-set-buffer
-         (if (eq ,$original ,$buffer)
+    `(with-set-buffer
+       (let ((,$original (selected-buffer))
+             (,$buffer ,buffer))
+         (if (eql ,$original ,$buffer)
              (progn ,@body)
            (unwind-protect
                (progn
