@@ -112,9 +112,9 @@
              (eql (selected-window) (get-view-window view))
              (refresh-screen)
              (pos-visible-in-window-p (point-max) (get-view-window view)))
-    (let* ((max-para (min +gist-max-parallel-requests+
-                          *gist-number-of-parallel-requests*))
-           (num-req (- max-para (count-pending-requests view))))
+    (let* ((max-req (min +gist-max-parallel-requests+
+                         *gist-number-of-parallel-requests*))
+           (num-req (- max-req (count-pending-requests view))))
       (dotimes (_ num-req)
         (do-fetch view (list-view-requested-page view))
         (incf (list-view-requested-page view)))
