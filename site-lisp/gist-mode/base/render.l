@@ -28,35 +28,13 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (mc-require "gist-mode/package")
   (mc-require "gist-mode/base/util")
+  (mc-require "gist-mode/base/buffer")
   )
 
 (in-package :gist-mode)
 
 (defstruct face
   id value text-attr)
-
-(defmacro with-selected-buffer ((buffer) &body body)
-  (with-gensyms ($original $buffer)
-    `(let ((,$original (selected-buffer))
-           (,$buffer ,buffer))
-       (with-set-buffer
-         (if (eq ,$original ,$buffer)
-             (progn ,@body)
-           (unwind-protect
-               (progn
-                 (set-buffer ,$buffer)
-                 ,@body)
-             (set-buffer ,$original)))))))
-(setf (get 'with-selected-buffer 'ed:lisp-indent-hook) 'with-selected-window)
-
-(defmacro with-temporary-writable ((buffer) &body body)
-  `(with-selected-buffer (,buffer)
-     (let ((read-only buffer-read-only))
-       (setf buffer-read-only nil)
-       (unwind-protect
-           (progn ,@body)
-         (setf buffer-read-only read-only)))))
-(setf (get 'with-temporary-writable 'lisp-indent-hook) 'with-selected-window)
 
 (defparameter *in-with-output-to-view* nil)
 (defmacro with-output-to-view ((view) &body body)
