@@ -29,6 +29,7 @@
 
 (mc-require "gist-mode/version")
 (mc-require "gist-mode/list")
+(mc-require "gist-mode/edit")
 (mc-require "gist-mode/post")
 
 

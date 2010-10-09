@@ -56,6 +56,9 @@
 (defsetf view-point view-set-point)
 
 (defun render (fmt &rest args)
+  (unless args
+    (psetf fmt "~A"
+           args (list fmt)))
   (apply 'format t fmt (mapcar #'(lambda (arg)
                                    ;; nil を ~A などで format すると "nil" になるのを防ぐ
                                    (or arg ""))

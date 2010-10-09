@@ -32,6 +32,7 @@
   (mc-require "gist-mode/base/render")
   (mc-require "gist-mode/base/face")
   (mc-require "gist-mode/base/keymap")
+  (mc-require "gist-mode/edit")
   )
 
 (in-package :gist-mode)
@@ -244,15 +245,19 @@
       (goto-column column)
       )))
 
-(defun gist-list-open-browser ()
+(defun gist-list-open-home-by-browser ()
   (interactive)
   (let ((gist (selected-gist)))
     (when gist
-      (shell-execute (gh:gist-home-url gist) t))))
+      (let ((url (gh:gist-home-url gist)))
+        (message "Open ~A" url)
+        (shell-execute url t)))))
 
-(defun gist-list-show ()
+(defun gist-list-edit ()
   (interactive)
-  )
+  (let ((gist (selected-gist)))
+    (when gist
+      (gist-edit gist))))
 
 (defun gist-list-quit ()
   (interactive)
@@ -261,12 +266,12 @@
 (define-keymap *gist-list-keymap* (make-sparse-keymap)
   (#\j 'next-line)
   (#\k 'previous-line)
-  (#\v 'gist-list-open-browser)
+  (#\v 'gist-list-open-home-by-browser)
   (#\q 'gist-list-quit)
 
   (#\L 'gist-list-toggle-show-detail)
 
-  (#\RET 'gist-list-show)
+  (#\RET 'gist-list-edit)
   (#\SPC 'next-page)
   )
 
