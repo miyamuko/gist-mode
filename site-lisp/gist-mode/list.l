@@ -246,7 +246,9 @@
 
 (defun gist-list-open-browser ()
   (interactive)
-  )
+  (let ((gist (selected-gist)))
+    (when gist
+      (shell-execute (gh:gist-home-url gist) t))))
 
 (defun gist-list-show ()
   (interactive)

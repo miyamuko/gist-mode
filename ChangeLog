@@ -1,5 +1,7 @@
 2010-10-09  MIYAMUKO Katsuyuki
 
+	* (gist-list-open-browser): v でブラウザで開けるようにした。
+
 	* とりあえず本文の最初の 3 行のトグルはできた
 
 	* face 関連は別ファイルにした
