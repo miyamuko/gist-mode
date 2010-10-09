@@ -1,3 +1,20 @@
+2010-10-09  MIYAMUKO Katsuyuki
+
+	* とりあえず本文の最初の 3 行のトグルはできた
+
+	* face 関連は別ファイルにした
+
+2010-10-08  MIYAMUKO Katsuyuki
+
+	* find-face-by-id, find-face-by-gist を追加
+
+	* render の中身を with-face に分割
+
+	* 一覧で本文の最初の 3 行も表示 (L でトグル)
+
+	* gist-list の非同期実行中に他のバッファに切り替えると画面が
+	  おかしくなるのを修正
+
 2010-10-06  MIYAMUKO Katsuyuki
 
 	* list 周りの自動ロードを実装

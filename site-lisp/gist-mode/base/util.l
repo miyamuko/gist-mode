@@ -39,8 +39,19 @@
 (setf (get 'with-gensyms 'ed:lisp-indent-hook) 'let)
 
 (defmacro invoke-later (dt &body body)
-  `(start-timer ,dt #'(lambda () ,@body) t))
+  `(start-timer ,dt #'(lambda ()
+                        (handler-case
+                            (progn ,@body)
+                          (error (c)
+                            (errbox c))))
+                t))
 (setf (get 'invoke-later 'ed::lisp-indent-hook) '1)
+
+(defun errbox (c)
+  (message-box (format nil "~A~%~A"
+                       (si:*structure-definition-name (si:*structure-definition c))
+                       (si:*condition-string c))
+               nil '(:exclamation)))
 
 (defun set-local-window-flag-alist (flags-alist &optional (window-or-buffer (selected-buffer)))
   (dolist (kv flags-alist)

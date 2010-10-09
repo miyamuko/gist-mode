@@ -33,9 +33,6 @@
 
 (in-package :gist-mode)
 
-(defstruct face
-  id value text-attr)
-
 (defparameter *in-with-output-to-view* nil)
 (defmacro with-output-to-view ((view) &body body)
   (with-gensyms ($buffer)
@@ -48,20 +45,21 @@
              ,@body))))))
 (setf (get 'with-output-to-view 'lisp-indent-hook) 'with-output-to-buffer)
 
-(defun view-output-point ()
+(defun beginning-of-view-p ()
+  (zerop (view-point)))
+
+(defun view-point ()
   (buffer-stream-point *standard-output*))
 
-(defun beginning-of-view-p ()
-  (zerop (view-output-point)))
+(defun view-set-point (point)
+  (buffer-stream-set-point *standard-output* point))
+(defsetf view-point view-set-point)
 
-(defun render (face fmt &rest args)
-  (check-type face (or face symbol))
-  (when (and face (symbolp face))
-    (setf face (make-face :id face)))
-  (let ((s (view-output-point)))
-    (apply 'format t fmt args)
-    (when face
-      (apply 'set-text-attribute s (view-output-point) face (face-text-attr face)))))
+(defun render (fmt &rest args)
+  (apply 'format t fmt (mapcar #'(lambda (arg)
+                                   ;; nil を ~A などで format すると "nil" になるのを防ぐ
+                                   (or arg ""))
+                               args)))
 
 
 (provide "gist-mode/base/render")

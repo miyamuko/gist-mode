@@ -27,6 +27,7 @@
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (mc-require "gist-mode/package")
+  (mc-require "gist-mode/base/util")
   )
 
 (in-package :gist-mode)
@@ -134,6 +135,10 @@ view と新規に作成したかどうかを多値で返す"
       (delete-buffer buffer)))
   (stop-view-timer-if-need))
 
+(defun erase-view (view)
+  "view の内容を削除"
+  (erase-buffer (view-buffer view)))
+
 
 (defun start-view-timer-if-need ()
   "タイマーが動作していなくて、view が一つ以上あるならタイマーを開始"
@@ -154,7 +159,10 @@ view と新規に作成したかどうかを多値で返す"
   (dolist (view (list-all-views))
     (let ((fn (view-ontimer view)))
       (when (and fn (functionp fn))
-        (ignore-errors (funcall fn))))))
+        (handler-case
+            (funcall fn)
+          (error (c)
+            (errbox "~S" c)))))))
 
 (defun do-request (view fn &rest args)
   "処理中のリクエストを追加する"
